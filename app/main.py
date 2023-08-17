@@ -214,7 +214,7 @@ elif app_mode == 'Run on Video':
 
 
 
-    faceCount = 0
+    # faceCount = 0
 
     with mpFaceMesh.FaceMesh(
     static_image_mode = True,
