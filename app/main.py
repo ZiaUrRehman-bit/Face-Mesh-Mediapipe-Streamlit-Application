@@ -10,8 +10,8 @@ from PIL import Image
 mpDrawings = mp.solutions.drawing_utils
 mpFaceMesh = mp.solutions.face_mesh
 
-DEMO_IMAGE = 'app/OriginalDemo.jpeg'
-DEMO_VIDEO = 'app/1.mp4'
+DEMO_IMAGE = 'OriginalDemo.jpeg'
+DEMO_VIDEO = '2.mp4'
 
 st.title('Face Mesh Application Using Mediapipe')
 
@@ -193,7 +193,7 @@ elif app_mode == 'Run on Video':
 
     st.markdown("## Output")
     
-    stframe = st.empty
+    stframe = st.empty()
     videoFileBuffer = st.sidebar.file_uploader( "Upload a Video", type=['mp4','mov', 'avi', 'asf', 'm4v'])
     tffile = tempfile.NamedTemporaryFile(delete=False)
 
@@ -248,10 +248,10 @@ elif app_mode == 'Run on Video':
             if not ret:
                 continue
 
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = faceMesh.process(frame)
         frame.flags.writeable = True
-        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
         faceCount = 0
         if results.multi_face_landmarks:
@@ -270,11 +270,16 @@ elif app_mode == 'Run on Video':
         fps = 1/(currTime - prevTime)
         prevTime = currTime
 
+
         kpi1_text.write(f"<h1 style = 'text-align: center; color: red;'>{int(fps)}</h1>", unsafe_allow_html=True)
         kpi2_text.write(f"<h1 style = 'text-align: center; color: red;'>{faceCount}</h1>", unsafe_allow_html=True)
         kpi3_text.write(f"<h1 style = 'text-align: center; color: red;'>{width}</h1>", unsafe_allow_html=True)
+
+        frame = cv2.resize(frame, (0,0), fx = 0.8, fy = 0.8)
+        frame = imageResize(image=frame, width=640)
+        stframe.image(frame, channels='BGR', use_column_width=True)
         
-    # st.subheader('Output Image')
+        st.subheader('Output Image')
     # t.image(outImage, use_column_width=True)
 
     # faceCount = 0
