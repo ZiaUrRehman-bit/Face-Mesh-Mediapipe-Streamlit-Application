@@ -11,7 +11,7 @@ mpDrawings = mp.solutions.drawing_utils
 mpFaceMesh = mp.solutions.face_mesh
 
 DEMO_IMAGE = 'app/OriginalDemo.jpeg'
-DEMO_VIDEO = '1.mp4'
+DEMO_VIDEO = 'app/1.mp4'
 
 st.title('Face Mesh Application Using Mediapipe')
 
@@ -203,7 +203,7 @@ elif app_mode == 'Run on Video':
             video = cv2.VideoCapture(0)
         else:
             video = cv2.VideoCapture(DEMO_VIDEO)
-            tffile = DEMO_VIDEO
+            tffile.name = DEMO_VIDEO
     else:
         tffile.write(videoFileBuffer.read())
         video = cv2.VideoCapture(tffile.name)
@@ -212,30 +212,49 @@ elif app_mode == 'Run on Video':
     height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fpsInput = int(video.get(cv2.CAP_PROP_FPS))
 
+    st.sidebar.text("Input Video")
+    st.sidebar.video(tffile.name)
 
+    fps = 0
+    i = 0
 
+    drawingSpecs = mpDrawings.DrawingSpec(thickness = 1, circle_radius = 1, color=(0, 255, 0))
 
-    faceCount = 0
+    kpi1, kpi2, kpi3 = st.columns(3)
 
-    with mpFaceMesh.FaceMesh(
-    static_image_mode = True,
-    max_num_faces = maxFaces,
-    min_detection_confidence = detectionConf) as faceMesh:
+    with kpi1:
+        st.markdown("**Frame Rate**")
+        kpi1_text = st.markdown("0")
+    with kpi2:
+        st.markdown("**Detected Faces**")
+        kpi2_text = st.markdown("0")
+    with kpi3:
+        st.markdown("**Resolution**")
+        kpi3_text = st.markdown("0")
+
+    st.markdown("<hr/>", unsafe_allow_html=True)
+
+    # faceCount = 0
+
+    # with mpFaceMesh.FaceMesh(
+    # static_image_mode = True,
+    # max_num_faces = maxFaces,
+    # min_detection_confidence = detectionConf) as faceMesh:
         
-        imageRGB = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        results = faceMesh.process(imageRGB)
-        outImage = cv2.cvtColor(imageRGB, cv2.COLOR_RGB2BGR)
-        outImage = outImage.copy()
+    #     imageRGB = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    #     results = faceMesh.process(imageRGB)
+    #     outImage = cv2.cvtColor(imageRGB, cv2.COLOR_RGB2BGR)
+    #     outImage = outImage.copy()
 
-        for faceLandmarks in results.multi_face_landmarks:
-            faceCount +=1
+    #     for faceLandmarks in results.multi_face_landmarks:
+    #         faceCount +=1
 
-            mpDrawings.draw_landmarks(
-                image = outImage,
-                landmark_list = faceLandmarks,
-                connections = mp.solutions.face_mesh.FACEMESH_TESSELATION,
-                landmark_drawing_spec = drawingSpecs)
-            kpi1_text.write(f"<h1 style = 'text-align: center; color: red;'>{faceCount}</h1>", unsafe_allow_html=True)
+    #         mpDrawings.draw_landmarks(
+    #             image = outImage,
+    #             landmark_list = faceLandmarks,
+    #             connections = mp.solutions.face_mesh.FACEMESH_TESSELATION,
+    #             landmark_drawing_spec = drawingSpecs)
+    #         kpi1_text.write(f"<h1 style = 'text-align: center; color: red;'>{faceCount}</h1>", unsafe_allow_html=True)
         
-        st.subheader('Output Image')
-        st.image(outImage, use_column_width=True)
+    #     st.subheader('Output Image')
+    #     st.image(outImage, use_column_width=True)
