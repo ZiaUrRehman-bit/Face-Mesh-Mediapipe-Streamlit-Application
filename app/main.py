@@ -10,7 +10,7 @@ from PIL import Image
 mpDrawings = mp.solutions.drawing_utils
 mpFaceMesh = mp.solutions.face_mesh
 
-DEMO_IMAGE = 'OriginalDemo.jpeg'
+DEMO_IMAGE = 'app/OriginalDemo.jpeg'
 DEMO_VIDEO = '1.mp4'
 
 st.title('Face Mesh Application Using Mediapipe')
@@ -214,7 +214,8 @@ elif app_mode == 'Run on Video':
 
 
 
-    # faceCount = 0
+
+    faceCount = 0
 
     with mpFaceMesh.FaceMesh(
     static_image_mode = True,
