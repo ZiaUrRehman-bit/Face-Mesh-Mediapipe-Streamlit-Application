@@ -234,27 +234,49 @@ elif app_mode == 'Run on Video':
 
     st.markdown("<hr/>", unsafe_allow_html=True)
 
+    with mpFaceMesh.FaceMesh(
+    max_num_faces = maxFaces,
+    min_detection_confidence = detectionConf,
+    min_tracking_confidence = trackinfConf
+    ) as faceMesh:
+        prevTime = 0
+
+        while video.isOpened():
+            i += 1
+            ret, frame = video.read()
+
+            if not ret:
+                continue
+
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = faceMesh.process(frame)
+        frame.flags.writeable = True
+        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+        faceCount = 0
+        if results.multi_face_landmarks:
+
+            for faceLandmarks in results.multi_face_landmarks:
+                faceCount +=1
+
+                mpDrawings.draw_landmarks(
+                    image = frame,
+                    landmark_list = faceLandmarks,
+                    connections = mp.solutions.face_mesh.FACEMESH_TESSELATION,
+                    landmark_drawing_spec = drawingSpecs,
+                    connection_drawing_spec = drawingSpecs)
+    
+        currTime = time.time()
+        fps = 1/(currTime - prevTime)
+        prevTime = currTime
+
+        kpi1_text.write(f"<h1 style = 'text-align: center; color: red;'>{int(fps)}</h1>", unsafe_allow_html=True)
+        kpi2_text.write(f"<h1 style = 'text-align: center; color: red;'>{faceCount}</h1>", unsafe_allow_html=True)
+        kpi3_text.write(f"<h1 style = 'text-align: center; color: red;'>{width}</h1>", unsafe_allow_html=True)
+        
+    # st.subheader('Output Image')
+    # t.image(outImage, use_column_width=True)
+
     # faceCount = 0
 
-    # with mpFaceMesh.FaceMesh(
-    # static_image_mode = True,
-    # max_num_faces = maxFaces,
-    # min_detection_confidence = detectionConf) as faceMesh:
-        
-    #     imageRGB = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    #     results = faceMesh.process(imageRGB)
-    #     outImage = cv2.cvtColor(imageRGB, cv2.COLOR_RGB2BGR)
-    #     outImage = outImage.copy()
-
-    #     for faceLandmarks in results.multi_face_landmarks:
-    #         faceCount +=1
-
-    #         mpDrawings.draw_landmarks(
-    #             image = outImage,
-    #             landmark_list = faceLandmarks,
-    #             connections = mp.solutions.face_mesh.FACEMESH_TESSELATION,
-    #             landmark_drawing_spec = drawingSpecs)
-    #         kpi1_text.write(f"<h1 style = 'text-align: center; color: red;'>{faceCount}</h1>", unsafe_allow_html=True)
-        
-    #     st.subheader('Output Image')
-    #     st.image(outImage, use_column_width=True)
+    
